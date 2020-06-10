@@ -4,8 +4,8 @@ import 'package:transport_booking_system_conductor_mobile/controllers/auth_contr
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
 import 'package:transport_booking_system_conductor_mobile/models/bus_trip_data.dart';
 import 'package:transport_booking_system_conductor_mobile/views/bus_layout_wrapper.dart';
+import 'package:transport_booking_system_conductor_mobile/views/shared_functions.dart';
 import 'package:transport_booking_system_conductor_mobile/views/shared_widgets/page_widget.dart';
-import 'package:intl/intl.dart';
 
 class FutureTrip extends StatefulWidget {
   final String uid;
@@ -19,6 +19,7 @@ class FutureTrip extends StatefulWidget {
 class _FutureTripState extends State<FutureTrip> {
   final AuthController _auth = AuthController();
   APIResponse<List<BusTripData>> _apiResponse;
+  SharedFunctions sharedFunctions = SharedFunctions();
   List<BusTripData> activeTrips; 
   bool _isLoading;
   String errorMessage;
@@ -39,20 +40,9 @@ class _FutureTripState extends State<FutureTrip> {
         errorMessage = _apiResponse.errorMessage;
       } else {
         activeTrips = _apiResponse.data;
-        activeTrips.sort((a, b) => _getTimeDifference(a.departureTime).compareTo(_getTimeDifference(b.departureTime)));
+        activeTrips.sort((a, b) => sharedFunctions.getTimeDifference(a.departureTime).compareTo(sharedFunctions.getTimeDifference(b.departureTime)));
       }
     });
-  }
-
-  _getTimeDifference(String dateTime) {
-    DateTime dt = DateTime.parse(dateTime.substring(0,19));
-    dt = dt.add(Duration(hours: 5,minutes: 30));
-    DateTime now = new DateTime.now();
-    String nowString1 = now.toString();
-    String nowString2 = nowString1.substring(0,10) + 'T' + nowString1.substring(11,19);
-    DateTime dtnow = DateTime.parse(nowString2);
-    int difference = dt.difference(dtnow).inMinutes;
-    return (difference);
   }
   
   @override
@@ -130,13 +120,7 @@ class FutureTripTile extends StatelessWidget {
   final BusTripData futureTrip;
   FutureTripTile({this.uid, this.token, this.futureTrip});
 
-  _formatDateTime(String dateTime) {
-    DateTime dt = DateTime.parse(dateTime);
-    dt = dt.add(Duration(hours: 5,minutes: 30));
-    String date = DateFormat.yMd().format(dt);
-    String time = DateFormat.jm().format(dt);
-    return ('$date at $time');
-  }
+  final SharedFunctions sharedFunctions = SharedFunctions();
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +139,7 @@ class FutureTripTile extends StatelessWidget {
               '${futureTrip.busNumber} ${futureTrip.startStation} to ${futureTrip.endStation}',
             ),
             subtitle: Text(
-              '${_formatDateTime(futureTrip.departureTime)} to ${_formatDateTime(futureTrip.arrivalTime)}',
+              '${sharedFunctions.formatDateTime(futureTrip.departureTime)} to ${sharedFunctions.formatDateTime(futureTrip.arrivalTime)}',
               style: TextStyle(
                 fontSize: 15.0,
                 fontWeight: FontWeight.bold,

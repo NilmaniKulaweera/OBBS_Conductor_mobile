@@ -4,7 +4,7 @@ import 'package:transport_booking_system_conductor_mobile/controllers/auth_contr
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
 import 'package:transport_booking_system_conductor_mobile/models/bus_trip_data.dart';
 import 'package:transport_booking_system_conductor_mobile/views/bus_layout_wrapper.dart';
-import 'package:intl/intl.dart';
+import 'package:transport_booking_system_conductor_mobile/views/shared_functions.dart';
 
 class BusDetails extends StatefulWidget {
   final String uid;
@@ -18,8 +18,10 @@ class BusDetails extends StatefulWidget {
 class _BusDetailsState extends State<BusDetails> {
   final AuthController _auth = AuthController();
   APIResponse<List<BusTripData>> _apiResponse;
+  SharedFunctions sharedFunctions = SharedFunctions();
   List<BusTripData> activeTrips;
   BusTripData currentTrip;
+  String tripState;
   bool _isLoading;
   String tripStatus;
   String errorMessage;
@@ -41,43 +43,16 @@ class _BusDetailsState extends State<BusDetails> {
       } else {
         activeTrips = _apiResponse.data;
         if (activeTrips.length != 0) {
-          int minDifference = _getTimeDifference(activeTrips[0].departureTime);
+          activeTrips.sort((a, b) => sharedFunctions.getTimeDifference(a.departureTime).compareTo(sharedFunctions.getTimeDifference(b.departureTime)));
           currentTrip = activeTrips[0];
-          for(var i=0; i<activeTrips.length;i++){
-            if (_getTimeDifference(activeTrips[i].departureTime) < 0) {
-              currentTrip = activeTrips[i];
-              break;
-            }
-            else {
-              int difference = _getTimeDifference(activeTrips[i].departureTime);
-              if (difference < minDifference) {
-                minDifference = difference;
-                currentTrip = activeTrips[i];
-              }
-            }
+          if(sharedFunctions.getTimeDifference(currentTrip.departureTime) < 0) {
+            tripStatus = "Ongoing";
+          } else {
+            tripStatus = "Pending";
           }
         }
       }
     });
-  }
-
-  _getTimeDifference(String dateTime) {
-    DateTime dt = DateTime.parse(dateTime.substring(0,19));
-    dt = dt.add(Duration(hours: 5,minutes: 30));
-    DateTime now = new DateTime.now();
-    String nowString1 = now.toString();
-    String nowString2 = nowString1.substring(0,10) + 'T' + nowString1.substring(11,19);
-    DateTime dtnow = DateTime.parse(nowString2);
-    int difference = dt.difference(dtnow).inMinutes;
-    return (difference);
-  }
-
-  _formatDateTime(String dateTime) {
-    DateTime dt = DateTime.parse(dateTime);
-    dt = dt.add(Duration(hours: 5,minutes: 30));
-    String date = DateFormat.yMd().format(dt);
-    String time = DateFormat.jm().format(dt);
-    return ('$date at $time');
   }
 
   @override
@@ -181,7 +156,7 @@ class _BusDetailsState extends State<BusDetails> {
                   style: TextStyle(fontSize: 20.0),
                 ),
                 subtitle: Text(
-                  _formatDateTime(currentTrip.departureTime),
+                  sharedFunctions.formatDateTime(currentTrip.departureTime),
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -191,7 +166,7 @@ class _BusDetailsState extends State<BusDetails> {
                   style: TextStyle(fontSize: 20.0),
                 ),
                 subtitle: Text(
-                  _formatDateTime(currentTrip.arrivalTime),
+                  sharedFunctions.formatDateTime(currentTrip.arrivalTime),
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -205,24 +180,15 @@ class _BusDetailsState extends State<BusDetails> {
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 15.0),
-              Text(
-                'Trip Status',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              FlatButton(
-                child: Text(
-                  'pending',
-                  style: TextStyle(fontSize: 17.0),
+              ListTile(
+                title: Text(
+                  'Trip Status',
+                  style: TextStyle(fontSize: 20.0),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)
+                subtitle: Text(
+                  tripStatus,
+                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
-                color: Colors.green[700],
-                textColor: Colors.white,
-                onPressed: () { 
-                  _showBottomSheet(); // a bottom sheet to update the status of the trip
-                },
               ),
               SizedBox(height: 15.0),
               FlatButton.icon( // to view the bookings of the current trip
@@ -246,104 +212,4 @@ class _BusDetailsState extends State<BusDetails> {
         ));
   }
 
-  void _showBottomSheet() async{
-    showModalBottomSheet(context: context, builder: (context) {
-      return StatefulBuilder( // to update the bottom sheet itself when set state is called
-        builder: (BuildContext context, StateSetter setState){
-          return Container(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Update the trip status',
-                  style: TextStyle(fontSize: 20.0)),
-                SizedBox(height: 20.0),
-                ListTile(
-                title: Text(
-                  'pending',
-                  style: TextStyle(fontSize: 17.0),
-                ),
-                leading: Radio(
-                  value: "pending",
-                  groupValue: tripStatus,
-                  activeColor: Colors.green,
-                  onChanged: (value) { 
-                    setState(() {
-                      tripStatus = value;
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  'started',
-                  style: TextStyle(fontSize: 17.0),
-                ),
-                leading: Radio(
-                  value: "started",
-                  groupValue: tripStatus,
-                  activeColor: Colors.green,
-                  onChanged: (value) {
-                    this.setState(() { tripStatus = value;});
-                    setState(() {
-                      tripStatus = value; 
-                    });   
-                  },
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  'finished',
-                  style: TextStyle(fontSize: 17.0),
-                ),
-                leading: Radio(
-                  value: "finished",
-                  groupValue: tripStatus,
-                  activeColor: Colors.green,
-                  onChanged: (value) {
-                    setState(() {   
-                      tripStatus = value; 
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  "cancelled",
-                  style: TextStyle(fontSize: 17.0),
-                ),
-                leading: Radio(
-                  value: "cancelled",
-                  groupValue: tripStatus,
-                  activeColor: Colors.green,
-                  onChanged: (value) {
-                    setState(() {
-                      tripStatus = value;   
-                    });
-                  },
-                ),
-              ),
-              FlatButton(
-                child: Text(
-                  "Update",
-                  style: TextStyle(fontSize: 20.0)
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)
-                ),
-                onPressed: () {
-                  // send a put request to the api to update the trip status
-                  Navigator.of(context).pop();
-                  _fetchBusDetails();
-                },
-                color: Colors.green[700],
-                textColor: Colors.white,
-              ),
-            ],
-           ),
-          );
-        }
-      ); 
-    });
-  }  
 }
