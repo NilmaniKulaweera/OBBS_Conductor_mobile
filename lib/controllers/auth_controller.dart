@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
 import 'dart:convert';
 import 'package:transport_booking_system_conductor_mobile/constants.dart';
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
@@ -9,9 +8,8 @@ import 'package:transport_booking_system_conductor_mobile/models/passenger.dart'
 import 'package:transport_booking_system_conductor_mobile/models/user_data.dart';
 
 class AuthController {
-  
-  
-  Future<APIResponse<UserData>> signInUser(IOClient client, String email, String password) async {
+
+  Future<APIResponse<UserData>> signInUser(http.Client client, String email, String password) async {
     // sign in the conductor when the email and password is given
     String url = Constants.SERVER;
 
@@ -51,7 +49,7 @@ class AuthController {
       }); 
   }
 
-  Future<APIResponse<List<BusTripData>>> getActiveTurns(IOClient client, String uid, String loginToken) async {
+  Future<APIResponse<List<BusTripData>>> getActiveTurns(http.Client client, String uid, String loginToken) async {
     // get the current and upcoming active turns assigned to the conductor
     String url = Constants.SERVER;
     String token = loginToken;
@@ -84,7 +82,7 @@ class AuthController {
     });
   }
 
-  Future<APIResponse<List<BusSeat>>> getBookings(IOClient client, String uid, String loginToken, String tripId) async {
+  Future<APIResponse<List<BusSeat>>> getBookings(http.Client client, String uid, String loginToken, String tripId) async {
     // get the current seat bookings of the trip
     String url = Constants.SERVER;
     String token = loginToken;
@@ -130,7 +128,7 @@ class AuthController {
     });
    }
 
-  Future<APIResponse<Passenger>> getPassengerDetails(IOClient client, String uid, String loginToken, String tripId, String seatId) async {
+  Future<APIResponse<Passenger>> getPassengerDetails(http.Client client, String uid, String loginToken, String tripId, String seatId) async {
     // get the details of the passenger who booked a particular seat
     String url = Constants.SERVER;
     String token = loginToken;
@@ -168,7 +166,7 @@ class AuthController {
     });
   }
 
-  Future<APIResponse<List<BusTripData>>> getPastTurns(IOClient client, String uid, String loginToken) async {
+  Future<APIResponse<List<BusTripData>>> getPastTurns(http.Client client, String uid, String loginToken) async {
     // get the current and upcoming active turns assigned to the conductor
     String url = Constants.SERVER;
     String token = loginToken;
