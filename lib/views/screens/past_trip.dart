@@ -3,7 +3,7 @@ import 'package:http/io_client.dart';
 import 'package:transport_booking_system_conductor_mobile/controllers/auth_controller.dart';
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
 import 'package:transport_booking_system_conductor_mobile/models/bus_trip_data.dart';
-import 'package:transport_booking_system_conductor_mobile/views/shared_functions.dart';
+import 'package:transport_booking_system_conductor_mobile/shared_functions.dart';
 import 'package:transport_booking_system_conductor_mobile/views/shared_widgets/page_widget.dart';
 
 class PastTrip extends StatefulWidget {
@@ -62,7 +62,7 @@ class _PastTripState extends State<PastTrip> {
           children: <Widget>[
             PageLowerHalf(),
             PageUpperHalf(),
-            _isLoading? Center(child: CircularProgressIndicator()) : Container(
+            _isLoading? Center(child: LoadingWidget()) : Container(
                 child: _apiResponse.error? SingleChildScrollView(
                   child: Card(
                     margin: EdgeInsets.fromLTRB(20, 40, 20, 40),
@@ -129,18 +129,41 @@ class PastTripTile extends StatelessWidget {
         children: <Widget>[
           SizedBox(height: 15.0),
           ListTile(
-            leading: Icon(
-              Icons.airport_shuttle,
-              color: Colors.grey[700],
+            leading: CircleAvatar(
+              backgroundImage: AssetImage("assets/busicon.jpg"), 
             ),
-            title: Text(
-              '${pastTrip.busNumber} ${pastTrip.startStation} to ${pastTrip.endStation}',
+            title: ListTile(
+              title: Text(
+                '${pastTrip.busNumber}',
+                style: TextStyle(
+                  fontSize: 20.0, 
+                  color: Colors.black,
+                ),
+              ),
+              subtitle: Text(
+                '${pastTrip.startStation} to ${pastTrip.endStation}',
+                style: TextStyle(
+                  fontSize: 17.0, 
+                  color: Colors.black,
+                ),
+              ),
             ),
-            subtitle: Text(
-              '${sharedFunctions.formatDateTime(pastTrip.departureTime)} to ${sharedFunctions.formatDateTime(pastTrip.arrivalTime)}',
-              style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
+            subtitle: ListTile(
+              title: Text(
+                '${sharedFunctions.formatDateTime(pastTrip.departureTime)} to',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              subtitle: Text(
+                '${sharedFunctions.formatDateTime(pastTrip.arrivalTime)}',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold
+                ),
               ),
             ),
           ),

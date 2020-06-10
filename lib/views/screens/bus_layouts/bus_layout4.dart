@@ -3,6 +3,7 @@ import 'package:http/io_client.dart';
 import 'package:transport_booking_system_conductor_mobile/controllers/auth_controller.dart';
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
 import 'package:transport_booking_system_conductor_mobile/models/bus_seat.dart';
+import 'package:transport_booking_system_conductor_mobile/views/shared_widgets/page_widget.dart';
 import 'package:transport_booking_system_conductor_mobile/views/shared_widgets/single_bus_seat.dart';
 
 class BusLayout4 extends StatefulWidget {
@@ -48,7 +49,7 @@ class _BusLayout4State extends State<BusLayout4> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: _isLoading? Center(child: CircularProgressIndicator()) : 
+      child: _isLoading? Center(child: LoadingWidget()) : 
         _apiResponse.error? Text(_apiResponse.errorMessage) : Column(
         children: generateExpanded(context),
       ),

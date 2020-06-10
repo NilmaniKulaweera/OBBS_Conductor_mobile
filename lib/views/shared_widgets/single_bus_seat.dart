@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/io_client.dart';
 import 'package:transport_booking_system_conductor_mobile/controllers/auth_controller.dart';
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
 import 'package:transport_booking_system_conductor_mobile/models/bus_seat.dart';
 import 'package:transport_booking_system_conductor_mobile/models/passenger.dart';
+import 'package:transport_booking_system_conductor_mobile/views/shared_widgets/page_widget.dart';
 
 class SingleBusSeat extends StatefulWidget {
   final String uid;
@@ -52,7 +54,7 @@ class _SingleBusSeatState extends State<SingleBusSeat> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading? Center(child: CircularProgressIndicator()) : Container(
+    return _isLoading? Center(child: LoadingWidget()) : Container(
       margin:EdgeInsets.symmetric(horizontal:10.0,vertical: 5.0),
       child: FlatButton(
         padding: const EdgeInsets.all(0),
@@ -95,8 +97,37 @@ class _SingleBusSeatState extends State<SingleBusSeat> {
                 ),
               ],
             ) : AlertDialog(
-              title: Text('Seat No: $seatId - $errorMessage'),
-              content: Text('LKR ${widget.seatBookings[widget.index].price}'),
+              //title: Text('Seat No: $seatId - $errorMessage'),
+              title: ListTile(
+                title: ListTile(
+                  title: Text(
+                    'Seat No: $seatId',
+                    style: TextStyle(
+                      fontSize: 20.0, 
+                      color: Colors.black,
+                    ),
+                  ),
+                  subtitle: Text(
+                    errorMessage,
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+                subtitle: ListTile(
+                  title: Text(
+                    'LKR ${widget.seatBookings[widget.index].price}',
+                    style: TextStyle(
+                      fontSize: 20.0, 
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+               
+              ),
+              //content: Text('LKR ${widget.seatBookings[widget.index].price}'),
               actions: <Widget>[
                 FlatButton(
                   child: Text(
@@ -119,3 +150,12 @@ class _SingleBusSeatState extends State<SingleBusSeat> {
     );
   }
 }
+
+// class LoadingWidget extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SpinKitCircle(
+//       color: Colors.green,
+//     );
+//   }
+// }

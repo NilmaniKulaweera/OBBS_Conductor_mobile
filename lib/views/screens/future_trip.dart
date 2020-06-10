@@ -3,8 +3,8 @@ import 'package:http/io_client.dart';
 import 'package:transport_booking_system_conductor_mobile/controllers/auth_controller.dart';
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
 import 'package:transport_booking_system_conductor_mobile/models/bus_trip_data.dart';
+import 'package:transport_booking_system_conductor_mobile/shared_functions.dart';
 import 'package:transport_booking_system_conductor_mobile/views/bus_layout_wrapper.dart';
-import 'package:transport_booking_system_conductor_mobile/views/shared_functions.dart';
 import 'package:transport_booking_system_conductor_mobile/views/shared_widgets/page_widget.dart';
 
 class FutureTrip extends StatefulWidget {
@@ -62,7 +62,7 @@ class _FutureTripState extends State<FutureTrip> {
           children: <Widget>[
             PageLowerHalf(),
             PageUpperHalf(),
-            _isLoading? Center(child: CircularProgressIndicator()) : Container(
+            _isLoading? Center(child: LoadingWidget()) : Container(
                 child: _apiResponse.error? SingleChildScrollView(
                   child: Card(
                     margin: EdgeInsets.fromLTRB(20, 40, 20, 40),
@@ -131,35 +131,64 @@ class FutureTripTile extends StatelessWidget {
         children: <Widget>[
           SizedBox(height: 15.0),
           ListTile(
-            leading: Icon(
-              Icons.airport_shuttle,
-              color: Colors.grey[700],
+            leading: CircleAvatar(
+              backgroundImage: AssetImage("assets/busicon.jpg"), 
             ),
-            title: Text(
-              '${futureTrip.busNumber} ${futureTrip.startStation} to ${futureTrip.endStation}',
+            title: ListTile(
+              title: Text(
+                '${futureTrip.busNumber}',
+                style: TextStyle(
+                  fontSize: 20.0, 
+                  color: Colors.black,
+                ),
+              ),
+              subtitle: Text(
+                '${futureTrip.startStation} to ${futureTrip.endStation}',
+                style: TextStyle(
+                  fontSize: 17.0, 
+                  color: Colors.black,
+                ),
+              ),
             ),
-            subtitle: Text(
-              '${sharedFunctions.formatDateTime(futureTrip.departureTime)} to ${sharedFunctions.formatDateTime(futureTrip.arrivalTime)}',
-              style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
+            subtitle: ListTile(
+              title: Text(
+                '${sharedFunctions.formatDateTime(futureTrip.departureTime)} to',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              subtitle: Text(
+                '${sharedFunctions.formatDateTime(futureTrip.arrivalTime)}',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold
+                ),
               ),
             ),
           ),
-          FlatButton.icon( // to view the bookings of the current trip
-            label: Text(
-              'View Bookings',
-              style: TextStyle(fontSize: 20.0),
+          SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: FlatButton.icon( // to view the bookings of the current trip
+                label: Text(
+                  'View Bookings',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)
+                ),
+                color: Colors.green[700],
+                textColor: Colors.white,
+                icon: Icon(Icons.dashboard),
+                onPressed: () { 
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => BusLayoutWrapper(uid: uid, token: token, tripId: futureTrip.tripId, busType: futureTrip.busType)));   
+                },
+              ),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5)
-            ),
-            color: Colors.green[700],
-            textColor: Colors.white,
-            icon: Icon(Icons.dashboard),
-            onPressed: () { 
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => BusLayoutWrapper(uid: uid, token: token, tripId: futureTrip.tripId, busType: futureTrip.busType)));   
-            },
           ),
           SizedBox(height: 15.0),
         ],

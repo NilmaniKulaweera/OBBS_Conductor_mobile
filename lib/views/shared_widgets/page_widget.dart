@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UpperHalf extends StatelessWidget {
   @override
@@ -33,6 +34,7 @@ class PageUpperHalf extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     return Container(
+      color: Color(0xFFECF0F3),
       height: screenHeight / 2,
     );
   }
@@ -72,6 +74,15 @@ class PageTitleHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Image(image: AssetImage('assets/logo.png')),
+    );
+  }
+}
+
+class LoadingWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SpinKitCircle(
+      color: Colors.green[800],
     );
   }
 }

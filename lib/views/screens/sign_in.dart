@@ -100,49 +100,55 @@ class _SignInState extends State<SignIn> {
                       obscureText: true,
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 25,
                     ),
-                    FlatButton(
-                      child: Text(
-                        "Login",
-                        style: TextStyle(fontSize: 17.0),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: FlatButton(
+                          child: Text(
+                            "Login",
+                            style: TextStyle(fontSize: 17.0),
+                          ),
+                          color: Colors.green[700],
+                          textColor: Colors.white,
+                          padding: EdgeInsets.only(
+                            left: 38, right: 38, top: 15, bottom: 15
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) { // validate the form based on the current state according to the conditions given in each TextFormField
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              IOClient client = IOClient();
+                              _apiResponse = await _auth.signInUser(client, email,password); // if form is valid sign in the user
+                              SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              
+                              if(_apiResponse.error){
+                                setState(() {
+                                  errorMessage = _apiResponse.errorMessage;
+                                });
+                                print(errorMessage);
+                              } else {
+                                setState(() {
+                                  sharedPreferences.setString("token", _apiResponse.data.token); // cache user data
+                                  sharedPreferences.setString("uid", _apiResponse.data.uid); 
+                                });
+                                String message = _apiResponse.data.message;
+                                print (message);
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Home())); // navigate to the home page if the user correctly signs in
+                              }
+                            }
+                          },
+                        ),
                       ),
-                      color: Colors.green[700],
-                      textColor: Colors.white,
-                      padding: EdgeInsets.only(
-                        left: 38, right: 38, top: 15, bottom: 15
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) { // validate the form based on the current state according to the conditions given in each TextFormField
-                          setState(() {
-                            _isLoading = true;
-                          });
-                          IOClient client = IOClient();
-                          _apiResponse = await _auth.signInUser(client, email,password); // if form is valid sign in the user
-                          SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                          setState(() {
-                            _isLoading = false;
-                          });
-                          
-                          if(_apiResponse.error){
-                            setState(() {
-                              errorMessage = _apiResponse.errorMessage;
-                            });
-                            print(errorMessage);
-                          } else {
-                            setState(() {
-                              sharedPreferences.setString("token", _apiResponse.data.token); // cache user data
-                              sharedPreferences.setString("uid", _apiResponse.data.uid); 
-                            });
-                            String message = _apiResponse.data.message;
-                            print (message);
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Home())); // navigate to the home page if the user correctly signs in
-                          }
-                        }
-                      },
                     ),
                     SizedBox(
                       height: 20,
@@ -155,7 +161,7 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                     // show the loading widget if the data is loading
-                    _isLoading ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.green[900]),)) : SizedBox(),
+                    _isLoading ? Center(child: LoadingWidget()) : SizedBox(),
                   ],
                 ),
               ),

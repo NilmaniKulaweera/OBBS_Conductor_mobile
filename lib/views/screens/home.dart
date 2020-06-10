@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading? Center(child: CircularProgressIndicator()) : Scaffold(
+    return _isLoading? Center(child: LoadingWidget()) : Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.green[900],

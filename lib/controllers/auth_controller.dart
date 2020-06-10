@@ -196,7 +196,7 @@ class AuthController {
     }).
     catchError((error) {
       client.close();
-      APIResponse<List<BusTripData>>(error: true, errorMessage: 'An error occured');
+      return APIResponse<List<BusTripData>>(error: true, errorMessage: 'An error occured');
     });
   }
   
