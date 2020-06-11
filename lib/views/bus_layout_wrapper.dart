@@ -57,6 +57,7 @@ class _BusLayoutWrapperState extends State<BusLayoutWrapper> {
                 width: double.infinity,
                 margin: EdgeInsets.all(10.0),
                 child: Center(
+                  key: Key('front'),
                   child: Text(
                     'Front', 
                     textAlign: TextAlign.center, 

@@ -114,6 +114,7 @@ class _BusDetailsState extends State<BusDetails> {
               Container(
                 alignment: Alignment.topRight,
                 child: FlatButton.icon(
+                  key: Key('refresh-button'),
                   icon: Icon(Icons.refresh),
                   label: Text(''),
                   onPressed: () async {
@@ -238,7 +239,8 @@ class _BusDetailsState extends State<BusDetails> {
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: FlatButton.icon( // to view the bookings of the current trip
+                  child: FlatButton.icon(
+                    key: Key('booking-button'), // to view the bookings of the current trip
                     label: Text(
                       'View Bookings',
                       style: TextStyle(fontSize: 20.0),

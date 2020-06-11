@@ -63,10 +63,12 @@ class _HomeState extends State<Home> {
             },  
           ), 
           PopupMenuButton<String>(
+              key: Key('menu-button'),
               onSelected: choiceAction,
               itemBuilder: (BuildContext context) {
                 return choices.map((String choice) {
                   return PopupMenuItem<String>(
+                    key: Key('popup $choice'),
                     value: choice,
                     child: Text(choice),
                   );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/io_client.dart';
 import 'package:transport_booking_system_conductor_mobile/controllers/auth_controller.dart';
 import 'package:transport_booking_system_conductor_mobile/models/api_response.dart';
@@ -57,6 +56,7 @@ class _SingleBusSeatState extends State<SingleBusSeat> {
     return _isLoading? Center(child: LoadingWidget()) : Container(
       margin:EdgeInsets.symmetric(horizontal:10.0,vertical: 5.0),
       child: FlatButton(
+        key: Key('seat $seatId'),
         padding: const EdgeInsets.all(0),
         child: Center(
           child: Text(
@@ -84,6 +84,7 @@ class _SingleBusSeatState extends State<SingleBusSeat> {
               ),
               actions: <Widget>[
                 FlatButton(
+                  key: Key('okButton $seatId'),
                   child: Text(
                     'OK',
                     style: TextStyle(

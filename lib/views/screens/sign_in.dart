@@ -76,6 +76,7 @@ class _SignInState extends State<SignIn> {
                       height: 15,
                     ),
                     TextFormField(
+                      key: Key('enter-email'),
                       decoration: InputDecoration(
                         labelText: "Email",
                         labelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -89,6 +90,7 @@ class _SignInState extends State<SignIn> {
                       height: 20,
                     ),
                     TextFormField(
+                      key: Key('enter-password'),
                       decoration: InputDecoration(
                         labelText: "Password",
                         labelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -107,6 +109,7 @@ class _SignInState extends State<SignIn> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: FlatButton(
+                          key: Key('signin'),
                           child: Text(
                             "Login",
                             style: TextStyle(fontSize: 17.0),
